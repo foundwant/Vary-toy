@@ -80,7 +80,7 @@ def eval_model(args):
     use_im_start_end = True
     image_token_len = 256
 
-    qs = 'Provide the ocr results of this image.'
+    qs = args.query #'Provide the ocr results of this image.'
     if use_im_start_end:
         qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN * image_token_len + DEFAULT_IM_END_TOKEN + qs
     else:
@@ -130,6 +130,7 @@ if __name__ == "__main__":
     parser.add_argument("--model-name", type=str, default="facebook/opt-350m")
     parser.add_argument("--image-file", type=str, required=True)
     parser.add_argument("--conv-mode", type=str, default=None)
+    parser.add_argument("--query", type=str, default='Written all the texts.')
     args = parser.parse_args()
 
     eval_model(args)
