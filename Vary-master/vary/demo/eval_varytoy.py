@@ -135,7 +135,7 @@ async def create_chat_completion(request: ChatRequest):
 
 
 if __name__ == "__main__":
-    uvicorn.run("run_llava:app", host="0.0.0.0", port=7891, log_level="info")
+    uvicorn.run("eval_varytoy:app", host="0.0.0.0", port=7891, log_level="info")
 
 #
 # if __name__ == "__main__":
