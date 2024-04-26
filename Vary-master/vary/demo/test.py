@@ -1,6 +1,10 @@
 import argparse
 from threading import Thread
+from typing import Optional
 
+import uvicorn
+from fastapi import FastAPI, Response
+from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForCausalLM, TextIteratorStreamer
 import torch
 import os
@@ -17,7 +21,6 @@ import requests
 from PIL import Image
 from io import BytesIO
 from vary.model.plug.blip_process import BlipImageEvalProcessor
-from transformers import TextStreamer
 from vary.model.plug.transforms import train_transform, test_transform
 
 DEFAULT_IMAGE_TOKEN = "<image>"
@@ -34,27 +37,20 @@ def load_image(image_file):
         image = Image.open(image_file).convert('RGB')
     return image
 
+
 from singleton_decorator import singleton
+
+
 @singleton
 class Model:
     def __init__(self):
         # Model
         disable_torch_init()
-        model_dir = '/data/firebux/vary-llava80k/'
-        model_name = os.path.expanduser(model_dir)
-        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-        config = varyConfig.from_pretrained(model_name, trust_remote_code=True)
-        with init_empty_weights():
-            model = varyQwenForCausalLM._from_config(config, torch_dtype=torch.float16)
-        no_split_modules = model._no_split_modules
-        print(f"no_split_modules: {no_split_modules}", flush=True)
-        map_list = {0: "20GB", 1: "20GB"}
-        device_map = infer_auto_device_map(model, max_memory=map_list, no_split_module_classes=no_split_modules)
+        model_path = "/data/firebux/workspace/Vary-toy"
+        tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
 
-        # 加速
-        model = load_checkpoint_and_dispatch(model, checkpoint=model_dir, device_map=device_map)
-        model.to(device='cuda')
-
+        model = varyQwenForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, device_map='cuda',
+                                                    trust_remote_code=True)
         self.model = model
         self.tokenizer = tokenizer
 
@@ -62,29 +58,24 @@ class Model:
 def get_model() -> Model:
     return Model()
 
+
 def eval_model(args):
-    # Model
-    disable_torch_init()
-    model_name = os.path.expanduser(args.model_name)
-
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-
-    model = varyQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map='cuda',
-                                                trust_remote_code=True)
-
-    model.to(device='cuda')
+    model_obj = get_model()
+    tokenizer = model_obj.tokenizer
+    model = model_obj.model
 
     # TODO download clip-vit in huggingface
     image_processor = CLIPImageProcessor.from_pretrained("/cache/vit-large-patch14/", torch_dtype=torch.float16)
-    image_processor_high = test_transform
+    image_processor_high = BlipImageEvalProcessor(image_size=1024)
     use_im_start_end = True
     image_token_len = 256
 
-    qs = args.query #'Provide the ocr results of this image.'
+    qs = args.query  # 'Provide the ocr results of this image.'
     if use_im_start_end:
-        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN * image_token_len + DEFAULT_IM_END_TOKEN + qs
+        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN*image_token_len + DEFAULT_IM_END_TOKEN  + '\n' + qs
     else:
         qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
+
     conv_mode = "mpt"
     args.conv_mode = conv_mode
 
@@ -119,18 +110,41 @@ def eval_model(args):
     )
     thread = Thread(target=model.generate, kwargs=generation_kwargs)
     thread.start()
+
     full_content = ""
     for text in streamer:
         full_content += text
     print(full_content)
 
+    return full_content
+
+
+class ChatRequest(BaseModel):
+    image_file: str
+    query: str
+
+
+app = FastAPI()
+
+
+@app.post("/v1/chat")
+async def create_chat_completion(request: ChatRequest):
+    # args = request
+    outputs = eval_model(request)
+    return Response(content=outputs)
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model-name", type=str, default="facebook/opt-350m")
-    parser.add_argument("--image-file", type=str, required=True)
-    parser.add_argument("--conv-mode", type=str, default=None)
-    parser.add_argument("--query", type=str, default='Written all the texts.')
-    args = parser.parse_args()
+    uvicorn.run("run_llava:app", host="0.0.0.0", port=7891, log_level="info")
 
-    eval_model(args)
+#
+# if __name__ == "__main__":
+#
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("--model-name", type=str, default="facebook/opt-350m")
+#     parser.add_argument("--image-file", type=str, required=True)
+#     parser.add_argument("--conv-mode", type=str, default=None)
+#     parser.add_argument("--query", type=str, default='Written all the texts.')
+#     args = parser.parse_args()
+#
+#     eval_model(args)
