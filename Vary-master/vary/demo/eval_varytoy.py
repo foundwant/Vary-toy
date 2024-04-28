@@ -51,6 +51,8 @@ class Model:
 
         model = varyQwenForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, device_map='cuda',
                                                     trust_remote_code=True)
+        model.to(device='cuda', dtype=torch.bfloat16)
+
         self.model = model
         self.tokenizer = tokenizer
 

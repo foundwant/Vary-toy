@@ -40,11 +40,10 @@ def eval_model(args):
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 
-    model = varyQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map='cuda', trust_remote_code=True)
+    model = varyQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map='cuda',
+                                                trust_remote_code=True)
 
-
-    model.to(device='cuda',  dtype=torch.bfloat16)
-
+    model.to(device='cuda', dtype=torch.bfloat16)
 
     image_processor = CLIPImageProcessor.from_pretrained("/cache/vit-large-patch14/", torch_dtype=torch.float16)
 
@@ -54,15 +53,12 @@ def eval_model(args):
 
     image_token_len = 256
 
-    qs = args.query #'Provide the ocr results of this image.'
+    qs = args.query  # 'Provide the ocr results of this image.'
 
     if use_im_start_end:
-        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN*image_token_len + DEFAULT_IM_END_TOKEN  + '\n' + qs
+        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN * image_token_len + DEFAULT_IM_END_TOKEN + '\n' + qs
     else:
         qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
-
-
-    
 
     conv_mode = "mpt"
     args.conv_mode = conv_mode
@@ -72,9 +68,7 @@ def eval_model(args):
     conv.append_message(conv.roles[1], None)
     prompt = conv.get_prompt()
 
-
     inputs = tokenizer([prompt])
-
 
     image = load_image(args.image_file)
     image_1 = image.copy()
@@ -90,30 +84,28 @@ def eval_model(args):
     stopping_criteria = KeywordsStoppingCriteria(keywords, tokenizer, input_ids)
     streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 
-
     with torch.autocast("cuda", dtype=torch.bfloat16):
         output_ids = model.generate(
             input_ids,
             images=[(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())],
             do_sample=True,
-            num_beams = 1,
+            num_beams=1,
             # temperature=0.2,
             streamer=streamer,
             max_new_tokens=2048,
             stopping_criteria=[stopping_criteria]
-            )
-        
+        )
+
         # print(output_ids)
 
         # outputs = tokenizer.decode(output_ids[0, input_ids.shape[1]:]).strip()
-        
+
         # # conv.messages[-1][-1] = outputs
         # if outputs.endswith(stop_str):
         #     outputs = outputs[:-len(stop_str)]
         # outputs = outputs.strip()
 
         # print(outputs)
-
 
 
 if __name__ == "__main__":
