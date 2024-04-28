@@ -1,4 +1,5 @@
 import argparse
+import base64
 from threading import Thread
 from typing import Optional
 
@@ -29,12 +30,17 @@ DEFAULT_IM_START_TOKEN = '<img>'
 DEFAULT_IM_END_TOKEN = '</img>'
 
 
-def load_image(image_file):
-    if image_file.startswith('http') or image_file.startswith('https'):
+def load_image(image_file: str, image_type: str = 'path'):
+    if image_type == 'base64':
+        img_data = base64.b64decode(image_file)
+        img_io = BytesIO(img_data)
+        image = Image.open(img_io).convert('RGB')
+    elif image_file.startswith('http') or image_file.startswith('https'):
         response = requests.get(image_file)
         image = Image.open(BytesIO(response.content)).convert('RGB')
     else:
         image = Image.open(image_file).convert('RGB')
+
     return image
 
 
@@ -74,7 +80,7 @@ def eval_model(args):
 
     qs = args.query  # 'Provide the ocr results of this image.'
     if use_im_start_end:
-        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN*image_token_len + DEFAULT_IM_END_TOKEN  + '\n' + qs
+        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN * image_token_len + DEFAULT_IM_END_TOKEN + '\n' + qs
     else:
         qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
 
@@ -92,7 +98,7 @@ def eval_model(args):
     keywords = [stop_str]
     stopping_criteria = KeywordsStoppingCriteria(keywords, tokenizer, input_ids)
 
-    image = load_image(args.image_file)
+    image = load_image(args.image_file, args.image_type)
     image_1 = image.copy()
     image_tensor = image_processor.preprocess(image, return_tensors='pt')['pixel_values'][0]
     image_tensor_1 = image_processor_high(image_1)
@@ -132,6 +138,7 @@ def eval_model(args):
 
 
 class ChatRequest(BaseModel):
+    image_type: Optional[str] = 'path'  # url、path、base64
     image_file: str
     query: str
 
