@@ -100,17 +100,28 @@ def eval_model(args):
     # streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
     streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 
-    generation_kwargs = dict(
-        inputs=input_ids,
-        images=[(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())],
-        do_sample=True,
-        num_beams=1,
-        streamer=streamer,
-        max_new_tokens=2048,
-        stopping_criteria=[stopping_criteria]
-    )
-    thread = Thread(target=model.generate, kwargs=generation_kwargs)
-    thread.start()
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        output_ids = model.generate(
+            input_ids,
+            images=[(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())],
+            do_sample=True,
+            num_beams=1,
+            # temperature=0.2,
+            streamer=streamer,
+            max_new_tokens=2048,
+            stopping_criteria=[stopping_criteria]
+        )
+    # generation_kwargs = dict(
+    #     inputs=input_ids,
+    #     images=[(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())],
+    #     do_sample=True,
+    #     num_beams=1,
+    #     streamer=streamer,
+    #     max_new_tokens=2048,
+    #     stopping_criteria=[stopping_criteria]
+    # )
+    # thread = Thread(target=model.generate, kwargs=generation_kwargs)
+    # thread.start()
 
     full_content = ""
     for text in streamer:
