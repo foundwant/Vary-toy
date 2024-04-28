@@ -1,5 +1,6 @@
 import argparse
 import base64
+import logging
 from threading import Thread
 from typing import Optional
 
@@ -148,7 +149,7 @@ app = FastAPI()
 
 @app.post("/v1/chat")
 async def create_chat_completion(request: ChatRequest):
-    # args = request
+    logging.info("image_type:{}", request.image_type)
     outputs = eval_model(request)
     return Response(content=outputs)
 
