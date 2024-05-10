@@ -113,10 +113,11 @@ def eval_model(args):
             images=[(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())],
             do_sample=True,
             num_beams=1,
-            temperature=1,
+            temperature=0,
             streamer=streamer,
             max_new_tokens=2048,
-            stopping_criteria=[stopping_criteria]
+            stopping_criteria=[stopping_criteria],
+            top_k=10,
         )
     # generation_kwargs = dict(
     #     inputs=input_ids,
