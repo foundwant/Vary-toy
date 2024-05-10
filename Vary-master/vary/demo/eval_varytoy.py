@@ -117,7 +117,7 @@ def eval_model(args):
             streamer=streamer,
             max_new_tokens=2048,
             stopping_criteria=[stopping_criteria],
-            top_k=10,
+            top_k=5,
         )
     # generation_kwargs = dict(
     #     inputs=input_ids,
