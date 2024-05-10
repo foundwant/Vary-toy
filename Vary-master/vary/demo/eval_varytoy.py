@@ -112,7 +112,7 @@ def eval_model(args):
             input_ids,
             images=[(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())],
             do_sample=True,
-            num_beams=3,
+            num_beams=1,
             temperature=1,
             streamer=streamer,
             max_new_tokens=2048,
