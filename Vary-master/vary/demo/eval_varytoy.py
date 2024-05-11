@@ -118,7 +118,7 @@ def eval_model(args):
             max_new_tokens=2048,
             stopping_criteria=[stopping_criteria],
             top_k=5,
-            top_p=0.5
+            # top_p=0.5
         )
     # generation_kwargs = dict(
     #     inputs=input_ids,
