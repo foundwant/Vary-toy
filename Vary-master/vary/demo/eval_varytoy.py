@@ -53,7 +53,8 @@ class Model:
     def __init__(self):
         # Model
         disable_torch_init()
-        model_path = "/data/firebux/workspace/Vary-toy"
+        # model_path = "/data/firebux/workspace/Vary-toy"
+        model_path = "/data/firebux/packages"
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
 
         model = varyQwenForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, device_map='cuda',
