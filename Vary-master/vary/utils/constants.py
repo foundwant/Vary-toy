@@ -30,8 +30,8 @@ CONVERSATION_DATA = {
     }, 
 
     'cc665k': {
-        'images': "/path_to/LLaVA1.5/images/",
-        'annotations': "/path_to/LLaVA1.5/llava_v1_5_66k.json",
+        'images': "/data/firebux/datasets-llava/LLaVA1.5/images/",
+        'annotations': "/data/firebux/datasets-llava/LLaVA1.5/llava_instruct_150k.json",
     },
 
     'pdf': {
