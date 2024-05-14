@@ -11,9 +11,9 @@ with open(data_path, 'r') as fp:
     data = json.load(fp)
 
 #    os.mkdir('./images')
-for k in data.keys():
-    ext = os.path.splitext(data[k]['image'])[1]
-    file_name = data[k]['id'][3:]
+for k in data:
+    ext = os.path.splitext(k['image'])[1]
+    file_name = k['id'][3:]
 
     outputFile = '/data/firebux/datasets-llava/LLaVA1.5/images/%s%s' % (file_name, ext)
     shutil.move("/data/firebux/datasets-llava/LLaVA1.5/", outputFile)
