@@ -12,11 +12,13 @@ with open(data_path, 'r') as fp:
 
 #    os.mkdir('./images')
 for k in data:
-    # ext = os.path.splitext(k['image'])[1]
-    file_name = f'GCC_train_{k["id"][3:]}'
+    ext = os.path.splitext(k['image'])[1]
+    origin_name = f'GCC_train_{k["id"][3:]}'
+    output_name = k['image']
 
-    outputFile = '/data/firebux/datasets-llava/LLaVA1.5/images/%s' % (k['image'])
-    shutil.move("/data/firebux/datasets-llava/LLaVA1.5/origin/%s" % file_name, outputFile)
+    origin_file = "/data/firebux/datasets-llava/LLaVA1.5/origin/%s%s" % (origin_name, ext)
+    output_file = '/data/firebux/datasets-llava/LLaVA1.5/images/%s' % output_name
+    shutil.move(origin_file, output_file)
 
 
 if __name__ == "__main__":
