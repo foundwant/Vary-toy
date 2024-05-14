@@ -19,7 +19,6 @@ import pathlib
 import torch
 import transformers
 
-
 from vary.train.trainer_vit_fixlr import varyTrainer
 from vary.model import *
 from vary.data import make_supervised_data_module
@@ -32,19 +31,18 @@ def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained("model_args.model_name_or_path", trust_remote_code=True, padding_side="right", model_max_length=training_args.model_max_length,)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(model_args.model_name_or_path, trust_remote_code=True,
+                                                           padding_side="right",
+                                                           model_max_length=training_args.model_max_length, )
 
-
-    model = varyQwenForCausalLM.from_pretrained(model_args.model_name_or_path, low_cpu_mem_usage=True, device_map='cuda')
-
-
+    model = varyQwenForCausalLM.from_pretrained(model_args.model_name_or_path, low_cpu_mem_usage=True,
+                                                device_map='cuda')
 
     smart_tokenizer_and_embedding_resize(
         special_tokens_dict=dict(pad_token='<|endoftext|>'),
         tokenizer=tokenizer,
         model=model,
-        )
-
+    )
 
     dtype = torch.float32
     if training_args.fp16:
@@ -63,14 +61,11 @@ def train():
     )
 
     model.initialize_vision_tokenizer(
-        tokenizer=tokenizer, 
-        freeze_lm_model=model_args.freeze_lm_model, 
+        tokenizer=tokenizer,
+        freeze_lm_model=model_args.freeze_lm_model,
         pretrained_stage1_model=model_args.pretrained_stage1_model,
         device=training_args.device,
     )
-
-
-
 
     model.to(dtype=dtype, device=training_args.device)
 
@@ -89,12 +84,10 @@ def train():
         for p in model.get_input_embeddings().parameters():
             p.requires_grad = True
 
-
         if not model_args.freeze_vision_tower:
             model.get_model().vision_tower.requires_grad_(True)
             model.get_model().vision_tower_high.requires_grad_(True)
 
-                
     params_grad = [p.numel() for n, p in model.named_parameters() if p.requires_grad]
     print(f"Number of Mapping Trainable Parameters: {sum(params_grad) / (1 << 20):.2f} M")
 
@@ -117,12 +110,10 @@ def train():
 
     #         FSDP.__init__ = patch_FSDP_use_orig_params(FSDP.__init__)
 
-    
-
     data_module = make_supervised_data_module(
-        interleave=training_args.interleave, 
-        with_box=training_args.with_box, 
-        tokenizer=tokenizer, 
+        interleave=training_args.interleave,
+        with_box=training_args.with_box,
+        tokenizer=tokenizer,
         data_args=data_args
     )
 
