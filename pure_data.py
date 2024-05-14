@@ -14,8 +14,8 @@ count = 1
 target_data = []
 #    os.mkdir('./images')
 for k in data:
-    if count >= 10000:
-        break
+    # if count >= 10000:
+    #     break
 
     ext = os.path.splitext(k['image'])[1]
     origin_name = f'GCC_train_{k["id"][3:]}'
@@ -31,6 +31,10 @@ for k in data:
     else:
         print(f"{origin_file} not exist.")
 
+with open('/data/firebux/datasets-llava/LLaVA1.5/valid_data.json', 'w') as f:
+    f.write(json.dumps(target_data, ensure_ascii=False))
+
+print(f"valid count {count}")
 
 if __name__ == "__main__":
     file = '000000163917.jpg'
