@@ -74,6 +74,6 @@ def loads_and_conv(path: str):
 
 if __name__ == "__main__":
     # datasets_name = 'keremberke/plane-detection'
-    download_dataset()
-    # path = "/data/firebux/data/train"
-    # loads_and_conv(path)
+    # download_dataset()
+    path = "/data/firebux/data/train"
+    loads_and_conv(path)
