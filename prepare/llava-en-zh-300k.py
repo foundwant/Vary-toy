@@ -42,8 +42,8 @@ def loads_and_conv(path: str):
     for data in datasets:
         item = {}
         img = data['images']
-        img_name = f"{seq}.{str.lower(img.format)}"
-        img.save(f"/data/firebux/datasets-llava/LLaVA-en-zh-300K/images/{seq}.{str.lower(img.format)}")
+        img_name = f"{seq}.jpeg"
+        img.save(f"/data/firebux/datasets-llava/LLaVA-en-zh-300K/images/{img_name}")
 
         item['id'] = seq
         item['image'] = img_name
@@ -73,5 +73,5 @@ def loads_and_conv(path: str):
 if __name__ == "__main__":
     # datasets_name = 'keremberke/plane-detection'
     # download_dataset()
-    path = ("/data/firebux/data/train")
+    path = "/data/firebux/data/train"
     loads_and_conv(path)
