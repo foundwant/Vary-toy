@@ -69,8 +69,9 @@ def loads_and_conv(path: str):
     # datasets.to_list()
 
 
-# if __name__ == "__main__":
-#     datasets_name = 'keremberke/plane-detection'
-#     # download_dataset(datasets_name)
-#     path = "datasets/train"
-#     loads_and_conv(path)
+if __name__ == "__main__":
+    # datasets_name = 'keremberke/plane-detection'
+    # download_dataset(datasets_name)
+    path = ("/data/hf_home/datasets_cache/BUAADreamer___llava-en-zh-300k/zh/0.0.0"
+            "/a5eccc35c627b11b05c08c64ecb197eb162a5bd1")
+    loads_and_conv(path)
