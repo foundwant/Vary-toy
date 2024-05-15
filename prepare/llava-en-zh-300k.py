@@ -63,8 +63,8 @@ def loads_and_conv(path: str):
         print(seq)
         seq += 1
 
-        if 100 == seq:
-            break
+        # if 100 == seq:
+        #     break
 
     with open('/data/firebux/datasets-llava/LLaVA-en-zh-300K/llava_instruct_en_zh_300k.json', 'w') as f:
         f.write(json.dumps(target_data, ensure_ascii=False, indent=2, separators=(",", ": ")))
