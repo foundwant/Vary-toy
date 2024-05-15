@@ -12,7 +12,7 @@ def download_dataset(dataset_name: str = 'BUAADreamer/llava-en-zh-300k'):
     # 数据集保存的路径
     save_path = '/data/firebux/data/'
     # name参数为full或mini，full表示下载全部数据，mini表示下载部分少量数据
-    dataset = load_dataset(dataset_name, name='zh')
+    dataset = load_dataset(dataset_name, name='zh')  # or name='en'
     dataset.save_to_disk(save_path)
 
 
@@ -72,6 +72,6 @@ def loads_and_conv(path: str):
 
 if __name__ == "__main__":
     # datasets_name = 'keremberke/plane-detection'
-    download_dataset()
-    # path = ("/data/firebux/data/llava-en-zh-300k")
-    # loads_and_conv(path)
+    # download_dataset()
+    path = ("/data/firebux/data/train")
+    loads_and_conv(path)
