@@ -2,6 +2,11 @@ import json
 import os
 import shutil
 
+"""
+数据集清洗脚本
+llava_instruct_150k.json数据集，将对齐数据集中的image字段
+
+"""
 data_path = "/data/firebux/datasets-llava/LLaVA1.5/llava_instruct_150k.json"
 
 # GCC_train_000163917.jpg
