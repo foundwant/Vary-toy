@@ -43,7 +43,7 @@ def loads_and_conv(path: str):
 
     for data in datasets:
         item = {}
-        img = data['images']
+        img = data['images'][0]
         img_name = f"{seq}.jpeg"
         img.save(f"/data/firebux/datasets-llava/LLaVA-en-zh-300K/images/{img_name}")
 
