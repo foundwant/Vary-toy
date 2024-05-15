@@ -12,7 +12,7 @@ def download_dataset(dataset_name: str = 'BUAADreamer/llava-en-zh-300k'):
     # 数据集保存的路径
     save_path = '/data/firebux/data/'
     # name参数为full或mini，full表示下载全部数据，mini表示下载部分少量数据
-    dataset = load_dataset(dataset_name, name="full")
+    dataset = load_dataset(dataset_name, name='zh')
     dataset.save_to_disk(save_path)
 
 
