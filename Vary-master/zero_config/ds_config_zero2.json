@@ -12,7 +12,7 @@
         "allgather_bucket_size": 5e8,
         "overlap_comm": true,
         "reduce_scatter": true,
-        "reduce_bucket_size": 5e8,
+        "reduce_bucket_size": "auto",
         "contiguous_gradients": true
     },
     "train_micro_batch_size_per_gpu": "auto"
