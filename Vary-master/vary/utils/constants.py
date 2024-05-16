@@ -50,12 +50,12 @@ CONVERSATION_DATA = {
     },
 
     'llava-zh-150k': {
-        'images': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/images',
+        'images': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/images/',
         'annotations': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/llava_instruct_zh_150k.json'
     },
 
     'llava-en-150k': {
-        'images': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/images',
+        'images': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/images/',
         'annotations': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/llava_instruct_en_150k.json'
     }
 }

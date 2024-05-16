@@ -35,8 +35,9 @@ def train():
                                                            padding_side="right",
                                                            model_max_length=training_args.model_max_length, )
 
-    model = varyQwenForCausalLM.from_pretrained(model_args.model_name_or_path, low_cpu_mem_usage=True,
-                                                device_map='cuda')
+    # model = varyQwenForCausalLM.from_pretrained(model_args.model_name_or_path, low_cpu_mem_usage=True,
+    #                                             device_map='cuda')
+    model = varyQwenForCausalLM.from_pretrained(model_args.model_name_or_path)
 
     smart_tokenizer_and_embedding_resize(
         special_tokens_dict=dict(pad_token='<|endoftext|>'),
