@@ -54,6 +54,11 @@ def loads_and_conv(path: str):
         # messages
         item['conversations'] = []
         for chat in data['messages']:
+            if 'user' == chat['role']:
+                chat['role'] = 'human'
+            if 'assistant' == chat['role']:
+                chat['role'] = 'gpt'
+
             item['conversations'].append(
                 {
                     "from": chat['role'],
