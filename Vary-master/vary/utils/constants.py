@@ -30,8 +30,8 @@ CONVERSATION_DATA = {
     }, 
 
     'cc665k': {
-        'images': "/data/firebux/datasets-llava/LLaVA1.5/images/",
-        'annotations': "/data/firebux/datasets-llava/LLaVA1.5/valid_data.json",
+        'images': "",
+        'annotations': "",
     },
 
     'pdf': {
@@ -49,6 +49,13 @@ CONVERSATION_DATA = {
         'annotations': "",
     },
 
+    'llava-zh-150k': {
+        'images': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/images',
+        'annotations': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/llava_instruct_zh_150k.json'
+    },
 
-
+    'llava-en-150k': {
+        'images': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/images',
+        'annotations': '/data/firebux/datasets-llava/LLaVA-en-zh-300K/llava_instruct_en_150k.json'
+    }
 }
