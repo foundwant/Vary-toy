@@ -5,14 +5,16 @@ from datasets import load_from_disk, load_dataset
 
 # from datasets import load_from_disk
 
+datasets_path = "/data/firebux/data/"
+
 
 def download_dataset(dataset_name: str = 'BUAADreamer/llava-en-zh-300k'):
     # 下载的数据集名称,
     # dataset_name = 'keremberke/plane-detection'
     # 数据集保存的路径
-    save_path = '/data/firebux/data/'
+    save_path = datasets_path
     # name参数为full或mini，full表示下载全部数据，mini表示下载部分少量数据
-    dataset = load_dataset(dataset_name, name='zh')  # or name='en'
+    dataset = load_dataset(dataset_name, name='en')  # 'zh' or 'en'
     dataset.save_to_disk(save_path)
 
 
@@ -43,9 +45,9 @@ def loads_and_conv(path: str):
 
     for data in datasets:
         item = {}
-        img = data['images'][0]
+        # img = data['images'][0]
         img_name = f"{seq}.jpeg"
-        img.save(f"/data/firebux/datasets-llava/LLaVA-en-zh-300K/images/{img_name}")
+        # img.save(f"/data/firebux/datasets-llava/LLaVA-en-zh-300K/images/{img_name}")
 
         item['id'] = seq
         item['image'] = img_name
@@ -66,7 +68,7 @@ def loads_and_conv(path: str):
         # if 100 == seq:
         #     break
 
-    with open('/data/firebux/datasets-llava/LLaVA-en-zh-300K/llava_instruct_en_zh_300k.json', 'w') as f:
+    with open('/data/firebux/datasets-llava/LLaVA-en-zh-300K/llava_instruct_en_150k.json', 'w') as f:
         f.write(json.dumps(target_data, ensure_ascii=False, indent=2, separators=(",", ": ")))
 
     # datasets.to_list()
@@ -74,6 +76,6 @@ def loads_and_conv(path: str):
 
 if __name__ == "__main__":
     # datasets_name = 'keremberke/plane-detection'
-    # download_dataset()
-    path = "/data/firebux/data/train"
+    download_dataset()
+    path = f"{datasets_path}/train"
     loads_and_conv(path)
